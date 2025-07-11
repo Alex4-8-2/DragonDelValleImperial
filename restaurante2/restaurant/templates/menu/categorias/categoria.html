@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-uppercase fw-bold mb-4">{{ tipo|capfirst }}</h2>
+  <div class="row g-5 justify-content-center">
+    {% for platillo in platillos %}
+    <div class="col-md-4 col-lg-3">
+      <div class="card-expanding">
+        {% if platillo.imagen %}
+        <img src="{{ platillo.imagen.url }}" alt="{{ platillo.nombre }}" class="card-image">
+        {% else %}
+        <img src="{% static 'img/placeholder.png' %}" alt="Sin imagen" class="card-image">
+        {% endif %}
+        <div class="card-info">
+          <span class="location">{{ platillo.nombre }}</span>
+          <h5 class="title">{{ platillo.nombre }}</h5>
+          {% if platillo.precio %}
+            <p class="price">Precio: ${{ platillo.precio }} USD</p>
+          {% endif %}
+          <p class="description">{{ platillo.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

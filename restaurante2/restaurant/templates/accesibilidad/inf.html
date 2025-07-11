@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="titulo-accesibilidad">ACCESIBILIDAD Y LEGALIDAD</h1>
+
+<div class="cuadro-transparente" style="
+    position: relative;
+    padding: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+">
+
+    <!-- Marca de agua centrada -->
+    <img src="{% static 'imagen/logo.png' %}" alt="Logo Marca de Agua" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.08;
+        width: 600px;
+        z-index: 0;
+    ">
+
+    <p class="texto-accesibilidad" style="position: relative; z-index: 1;">
+
+        <i class="fas fa-universal-access"></i> En <strong>El Dragón del Valle Imperial</strong>, valoramos la igualdad de acceso a nuestros servicios. Por ello, nuestro sistema de reservas ha sido diseñado con principios de <strong>inclusión digital</strong>.<br><br>
+
+        <i class="fas fa-laptop"></i> <strong>Accesibilidad digital:</strong><br>
+        - Navegación sencilla con interfaz intuitiva.<br>
+        - Compatibilidad con lectores de pantalla y navegación por teclado.<br>
+        - Contraste visual y tipografía pensada para baja visión.<br><br>
+
+        <i class="fas fa-handshake-angle"></i> <strong>Compromiso con la inclusión:</strong><br>
+        - Accesible para personas mayores o con discapacidad cognitiva.<br>
+        - Botones visibles, textos claros y procesos guiados.<br>
+        - Canal de contacto para asistencia personalizada.<br><br>
+
+        <i class="fas fa-balance-scale"></i> <strong>Legalidad y privacidad:</strong><br>
+        - Cumplimiento de normativas sobre protección de datos personales.<br>
+        - Uso responsable y confidencial de la información proporcionada.<br>
+        - Consentimiento explícito antes de compartir datos.<br><br>
+
+        <i class="fas fa-envelope"></i> <strong>Correo de contacto:</strong> valleimperialgrill@gmail.com<br><br>
+
+        <strong>🛡️ En El Dragón del Valle Imperial, la accesibilidad y el respeto legal son pilares de nuestro compromiso con cada cliente. ¡Todos son bienvenidos! 🛡️</strong>
+
+    </p>
+</div>
+
+<!-- Enlace a Font Awesome (si no está en base.html) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+{% endblock %}
+
+

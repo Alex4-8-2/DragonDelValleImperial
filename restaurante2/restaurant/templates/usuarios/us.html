@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="profile-page">
+
+  <!-- Banner -->
+  <div class="profile-header-container">
+    {% if perfil.banner %}
+      <div class="profile-banner" style="background-image: url('{{ perfil.banner.url }}');"></div>
+    {% else %}
+      <div class="profile-banner default-banner text-center text-white py-5">
+        <h2>Bienvenido, {{ user.get_full_name|default:user.username }}</h2>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Foto de perfil -->
+  <div class="profile-avatar-wrapper text-center">
+    {% if perfil.foto %}
+      <img src="{{ perfil.foto.url }}" class="profile-img" alt="Foto de perfil">
+    {% else %}
+      <div class="icon-placeholder">
+        <i class="bi bi-person-circle text-primary"></i>
+      </div>
+    {% endif %}
+    <h2 class="mt-2">{{ user.get_full_name|default:user.username }}</h2>
+    <p class="text-muted">{{ user.email }}</p>
+  </div>
+
+  <div class="profile-card mt-4 px-4 py-3">
+
+    <!-- Información personal -->
+    <div class="profile-section">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h3>Información personal</h3>
+        <button class="btn btn-outline-warning" onclick="toggleModal()">
+          <i class="bi bi-pencil-square me-1"></i> Editar Perfil
+        </button>
+      </div>
+      <div class="info-grid">
+        <div class="info-box"><span>Usuario:</span> {{ user.username }}</div>
+        <div class="info-box"><span>Email:</span> {{ user.email }}</div>
+        <div class="info-box"><span>Teléfono:</span> {{ perfil.telefono|default:"No registrado" }}</div>
+        <div class="info-box"><span>Dirección:</span> {{ perfil.direccion|default:"No registrada" }}</div>
+        <div class="info-box"><span>Miembro desde:</span> {{ user.date_joined|date:"d M Y" }}</div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="profile-section actions">
+      <h3>Acciones</h3>
+      <a href="{% url 'password_change' %}" class="btn btn-outline-primary">
+        <i class="bi bi-key me-1"></i> Cambiar contraseña
+      </a>
+      <a href="{% url 'actualizar_email' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-envelope me-1"></i> Actualizar correo
+      </a>
+      <form method="post" action="{% url 'eliminar_cuenta' %}" onsubmit="return confirm('¿Deseas eliminar tu cuenta? Esta acción no se puede deshacer.');" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">
+          <i class="bi bi-trash me-1"></i> Eliminar cuenta
+        </button>
+      </form>
+    </div>
+
+    <!-- Reserva Activa -->
+    {% if reserva_activa %}
+    <div class="profile-section">
+      <h3>Reserva Activa</h3>
+      <div class="info-grid">
+        <div class="info-box"><span>Fecha:</span> {{ reserva_activa.fecha }}</div>
+        <div class="info-box"><span>Hora:</span> {{ reserva_activa.hora }}</div>
+        <div class="info-box"><span>Personas:</span> {{ reserva_activa.personas }}</div>
+        <div class="info-box"><span>Estado:</span> {{ reserva_activa.estado }}</div>
+      </div>
+      {% if es_editable %}
+      <form method="post" class="mt-3 d-flex flex-wrap gap-2 align-items-start">
+        {% csrf_token %}
+        {{ form_edicion.as_p }}
+        <button type="submit" name="editar_reserva" class="btn btn-outline-success">
+          <i class="bi bi-check-circle me-1"></i> Guardar cambios
+        </button>
+        <a href="{% url 'cancelar_reserva' reserva_activa.id %}" class="btn btn-outline-danger"
+           onclick="return confirm('¿Estás seguro de que deseas cancelar tu reserva?');">
+          <i class="bi bi-x-circle me-1"></i> Cancelar reserva
+        </a>
+      </form>
+      {% else %}
+      <p class="text-muted mt-2">No se puede modificar/cancelar la reserva. Faltan menos de 48 horas.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Comentarios -->
+    <div class="profile-section">
+      <h3>Mis Comentarios</h3>
+      {% if comentarios %}
+        {% for comentario in comentarios %}
+          <div class="review-box">
+            <div class="d-flex align-items-center mb-2">
+              {% if user.perfil.foto %}
+                <img src="{{ user.perfil.foto.url }}" class="rounded-circle me-2" width="40" height="40">
+              {% else %}
+                <i class="bi bi-person-circle fs-3 me-2 text-secondary"></i>
+              {% endif %}
+              <strong>{{ comentario.nombre }}</strong>
+            </div>
+            <p class="mb-1">{{ comentario.texto }}</p>
+            <div class="text-warning mb-1">
+              {% for i in "12345" %}
+                {% if forloop.counter <= comentario.puntuacion %}
+                  ★
+                {% else %}
+                  ☆
+                {% endif %}
+              {% endfor %}
+              <span class="ms-2">{{ comentario.puntuacion }}/5</span>
+            </div>
+            <small class="text-muted">Publicado el {{ comentario.fecha_formateada }}</small>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">No has dejado comentarios aún.</p>
+      {% endif %}
+    </div>
+
+  </div> 
+</div> 
+
+<!-- MODAL EDITAR PERFIL -->
+<div class="modal-overlay" id="modalPerfil" style="display: none;">
+  <div class="modal-content p-4 rounded shadow-lg bg-white" style="max-width: 600px; width: 100%;">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Cerrar" onclick="toggleModal()"></button>
+    <h3 class="mb-4">Editar Perfil</h3>
+    <form method="post" enctype="multipart/form-data" action="{% url 'editar_perfil' %}">
+      {% csrf_token %}
+      {{ perfil_form.non_field_errors }}
+
+      <!-- NOMBRE -->
+      <div class="mb-3">
+        {{ perfil_form.nombre.label_tag }}
+        {{ perfil_form.nombre }}
+        {% if perfil_form.nombre.errors %}
+          <div class="text-danger small">{{ perfil_form.nombre.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- FOTO DE PERFIL -->
+      <div class="mb-4">
+        {{ perfil_form.foto.label_tag }}
+        {{ perfil_form.foto }}
+        {% if perfil_form.foto.errors %}
+          <div class="text-danger small mt-1">{{ perfil_form.foto.errors }}</div>
+        {% endif %}
+        <div class="mt-3">
+          {% if perfil.foto and perfil.foto.name %}
+            <img id="preview_foto"
+                src="{{ perfil.foto.url }}"
+                class="img-thumbnail rounded-circle shadow"
+                alt="Vista previa"
+                style="max-width:150px;">
+          {% else %}
+            <img id="preview_foto"
+                src="#"
+                class="img-thumbnail rounded-circle shadow d-none"
+                alt="Vista previa"
+                style="max-width:150px;">
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- BANNER -->
+      <div class="mb-4">
+        {{ perfil_form.banner.label_tag }}
+        {{ perfil_form.banner }}
+        {% if perfil_form.banner.errors %}
+          <div class="text-danger small mt-1">{{ perfil_form.banner.errors }}</div>
+        {% endif %}
+        <div class="mt-3">
+          {% if perfil.banner and perfil.banner.name %}
+            <img id="preview_banner"
+                src="{{ perfil.banner.url }}"
+                class="img-fluid rounded shadow"
+                alt="Vista previa banner"
+                style="max-width:100%;">
+          {% else %}
+            <img id="preview_banner"
+                src="#"
+                class="img-fluid rounded shadow d-none"
+                alt="Vista previa banner"
+                style="max-width:100%;">
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- TELÉFONO -->
+      {{ perfil_form.telefono.label_tag }}
+        {{ perfil_form.telefono }}
+        {% if perfil_form.telefono.errors %}
+          <div class="text-danger small mt-1">{{ perfil_form.telefono.errors }}</div>
+        {% endif %}
+
+      <!-- DIRECCIÓN -->
+      <div class="mb-4">
+        {{ perfil_form.direccion.label_tag }}
+        {{ perfil_form.direccion }}
+        {% if perfil_form.direccion.errors %}
+          <div class="text-danger small mt-1">{{ perfil_form.direccion.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Botones -->
+      <div class="mt-4 text-end">
+        <button type="submit" class="btn btn-success">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleModal() {
+    const modal = document.getElementById('modalPerfil');
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  }
+
+  function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      preview.src = '#';
+      preview.style.display = 'none';
+    }
+  }
+
+document.getElementById('id_foto').addEventListener('change', function(event) {
+  const [file] = event.target.files;
+  if (file) {
+    const preview = document.getElementById('preview_foto');
+    preview.src = URL.createObjectURL(file);
+    preview.classList.remove('d-none'); 
+    preview.style.display = 'block';
+  }
+});
+
+document.getElementById('id_banner').addEventListener('change', function(event) {
+  const [file] = event.target.files;
+  if (file) {
+    const preview = document.getElementById('preview_banner');
+    preview.src = URL.createObjectURL(file);
+    preview.classList.remove('d-none'); 
+    preview.style.display = 'block';
+  }
+});
+
+</script>
+{% endblock %}

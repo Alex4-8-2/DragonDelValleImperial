@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="titulo-info">INFORMACIÓN</h1>
+
+<div class="cuadro-transparente" style="
+    position: relative;
+    padding: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+">
+
+    <!-- Marca de agua centrada -->
+    <img src="{% static 'imagen/logo.png' %}" alt="Logo Marca de Agua" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.1;
+        width: 600px;
+        z-index: 0;
+    ">
+
+    <p class="texto-info" style="position: relative; z-index: 1;">
+
+        <i class="fas fa-fire-alt"></i> En <strong>El Dragón del Valle Imperial</strong>, nos enorgullece ofrecer a nuestros clientes una experiencia única y personalizada, tanto en la mesa como en la planificación de su visita. Por ello, hemos desarrollado un <strong>sistema de reservas en línea</strong>, pensado para brindar comodidad, rapidez y seguridad en cada reserva.<br><br>
+
+        <i class="fas fa-question-circle"></i> <strong>¿Qué es el sistema de reservas?</strong><br>
+        Es una plataforma web desarrollada con Django que permite a nuestros clientes <strong>reservar mesas en línea</strong>, sin necesidad de llamadas telefónicas o esperas innecesarias. La interfaz es clara y fácil de usar, y está disponible las 24 horas del día.<br><br>
+
+        <i class="fas fa-star"></i> <strong>Funcionalidades destacadas:</strong><br>
+        <ul>
+            <li><i class="fas fa-user-clock"></i> Reserva personalizada: Día, hora, número de comensales y comentarios.</li>
+            <li><i class="fas fa-check-circle"></i> Confirmación automática de disponibilidad.</li>
+            <li><i class="fas fa-tasks"></i> Gestión eficiente por parte del equipo del restaurante.</li>
+            <li><i class="fas fa-bell"></i> Notificaciones de confirmación, recordatorio o cancelación.</li>
+            <li><i class="fas fa-shield-alt"></i> Seguridad y privacidad de datos.</li>
+        </ul><br>
+
+        <i class="fas fa-thumbs-up"></i> <strong>Ventajas para nuestros clientes:</strong><br>
+        - Ahorro de tiempo.<br>
+        - Garantía de disponibilidad antes de llegar.<br>
+        - Atención más personalizada.<br>
+        - Experiencia digital moderna y confiable.<br><br>
+
+        <i class="fas fa-envelope"></i> <strong>Correo electronico:</strong>valleimperialgrill@gmail.com<br><br>
+
+        <i class="fas fa-map-marker-alt"></i> <strong>¿Cómo acceder?</strong><br>
+        Solo debes ingresar al sitio web oficial de <strong>El Dragón del Valle Imperial</strong> y dirigirte a la sección de <strong>"Reservar"</strong>, donde podrás completar tu solicitud en pocos pasos.<br><br>
+
+        <strong>🔥 ¡Te esperamos para que vivas la experiencia de El Dragón del Valle Imperial como nunca antes! 🔥</strong>
+
+    </p>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+{% endblock %}

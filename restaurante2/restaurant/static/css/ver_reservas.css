@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+:root {
+  --main-bg: #f4f6f9;
+  --accent: #3498db;        /* Azul principal */
+  --accent-dark: #217dbb;   /* Azul más oscuro */
+  --accent-light: #5dade2;  /* Azul más claro */
+  --text-dark: #fff;
+  --white: #fff;
+  --shadow: rgba(0, 0, 0, 0.06);
+
+  /* Colores para botones */
+  --btn-edit-bg: var(--accent);          /* Azul para editar */
+  --btn-edit-bg-hover: var(--accent-dark);
+
+  --btn-delete-bg: #e74c3c;              /* Rojo fuerte para eliminar */
+  --btn-delete-bg-hover: #c0392b;
+
+  --btn-clear-bg: #e74c3c;               /* Rojo fuerte para limpiar */
+  --btn-clear-bg-hover: #c0392b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--main-bg);
+  color: var(--text-dark);
+}
+
+/* Título principal */
+h1 {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 2rem 0;
+  text-align: center;
+  animation: fadeInDown 0.5s ease-in-out;
+}
+
+/* Filtros */
+form.row {
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+form.row input,
+form.row button {
+  border-radius: 12px;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease-in-out;
+  border: 1px solid #ccc;
+}
+
+form.row input:focus {
+  box-shadow: 0 0 8px var(--accent-light);
+  border-color: var(--accent);
+}
+
+/* Botones generales */
+.btn {
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+  border: none;
+  border-radius: 12px;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+/* Botón Editar - azul */
+.btn-edit {
+  background-color: var(--btn-edit-bg);
+  color: var(--white);
+}
+
+.btn-edit:hover,
+.btn-edit:focus {
+  background-color: var(--btn-edit-bg-hover);
+  box-shadow: 0 4px 12px rgba(33, 125, 187, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Botón Eliminar - rojo */
+.btn-delete {
+  background-color: var(--btn-delete-bg);
+  color: var(--white);
+}
+
+.btn-delete:hover,
+.btn-delete:focus {
+  background-color: var(--btn-delete-bg-hover);
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Botón Limpiar - rojo */
+.btn-clear {
+  background-color: var(--btn-clear-bg);
+  color: var(--white);
+}
+
+.btn-clear:hover,
+.btn-clear:focus {
+  background-color: var(--btn-clear-bg-hover);
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Tabla con animación */
+.table {
+  font-size: 0.95rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--white);
+  animation: fadeIn 0.6s ease;
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+.table th {
+  background-color: var(--accent);
+  color: white;
+  font-weight: 600;
+  text-align: center;
+}
+
+.table td {
+  vertical-align: middle;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background-color: #f9fbfc;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #ecf5fb;
+  cursor: pointer;
+}
+
+/* Cards */
+.card {
+  border-radius: 16px;
+  box-shadow: 0 6px 24px var(--shadow);
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.6s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px var(--shadow);
+}
+
+/* Badge */
+.badge {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* Paginación */
+.pagination .page-link {
+  border-radius: 10px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* Modal */
+.modal-content {
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  animation: fadeIn 0.4s ease;
+}
+
+.modal-header {
+  background-color: var(--accent);
+  color: white;
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .table {
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+  }
+
+  form.row {
+    flex-direction: column;
+  }
+}

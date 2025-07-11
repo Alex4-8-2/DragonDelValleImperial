@@ -1,0 +1,72 @@
+/* arquitectura.css */
+
+/* Reset de estilos básicos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Tipografía y colores base */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* Encabezado */
+.header {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+}
+
+.nav__logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000000;
+  text-decoration: none;
+}
+
+/* Navegación */
+.nav__menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav__list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav__link {
+  text-decoration: none;
+  color: #000000;
+  transition: color 0.3s;
+}
+
+.nav__link:hover,
+.active-link {
+  color: #ff6347; /* Color destacado */
+}
+
+/* Footer */
+.footer {
+  background-color: #f8f9fa;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.footer__title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.footer__description,
+.footer__link,
+.footer__copy {
+  color: #6c757d;
+  font-size: 0.9rem;
+}

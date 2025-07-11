@@ -1,0 +1,25 @@
+<!-- confirmacion_reserva.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Reserva</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+    <h2>Confirmación de tu reserva</h2>
+    <p>Estimado {{ reservation_data.nombre }},</p>
+    <p>Tu reserva ha sido confirmada con los siguientes detalles:</p>
+    <ul>
+        <li><strong>Fecha:</strong> {{ reservation_data.fecha }}</li>
+        <li><strong>Hora:</strong> {{ reservation_data.hora }}</li>
+        <li><strong>Número de personas:</strong> {{ reservation_data.personas }}</li>
+        <li><strong>Solicitud especial:</strong> {{ reservation_data.solicitud }}</li>
+        <li><strong>Método de pago:</strong> {{ reservation_data.metodo_pago }}</li>
+    </ul>
+    <p>¡Esperamos verte pronto!</p>
+    <p>Saludos cordiales,</p>
+    <p>El equipo de El Dragón del Valle Imperial</p>
+</body>
+</html>

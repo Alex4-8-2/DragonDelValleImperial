@@ -1,0 +1,248 @@
+{% load static %}
+{% load i18n %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% trans "Registrarse" %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body.login-body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, rgba(34,34,34,0.8), rgba(0,0,0,0.8)),
+      url("{% static 'imagen/paisaje1.jpg' %}") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .login-page {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 40px 30px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .login-page h1 {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .login-page p.subtext {
+      font-size: 15px;
+      color: #ddd;
+      margin-bottom: 30px;
+    }
+
+    .login-page h2 {
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+
+    form p {
+      margin-bottom: 20px;
+      text-align: left;
+      position: relative;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 80%;
+      padding: 12px 45px 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+      outline: none;
+      color: #333;
+      font-size: 15px;
+      display: block;   
+      margin: 0 auto; 
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 65%;
+      right: 35px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #666;
+      font-size: 18px;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-password:hover {
+      color: #cccccc;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background-color: #524f4f;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+      background-color: #b3b3b3;
+    }
+
+    .btn-google {
+      width: 100%;
+      background-color: #db4437;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 12px;
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    .btn-google i {
+      margin-right: 8px;
+    }
+
+    .login-footer {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .login-footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .login-page {
+        padding: 30px 20px;
+      }
+
+      .login-page h1 {
+        font-size: 26px;
+      }
+
+      .login-page h2 {
+        font-size: 20px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        font-size: 14px;
+      }
+
+      .btn-primary,
+      .btn-google {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body class="login-body">
+  <div class="login-page">
+    <h1><i class="fas fa-fire"></i> Únete a la experiencia</h1>
+    <p class="subtext">Disfruta de un ambiente único, promociones exclusivas y mucho más.</p>
+
+    <h2>{% trans "Crear cuenta" %}</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <p>
+        <label for="id_username"><i class="fas fa-user"></i> Usuario:</label>
+        {{ form.username }}
+      </p>
+
+      <p>
+        <label for="id_email"><i class="fas fa-envelope"></i> Correo Electrónico:</label>
+        {{ form.email }}
+      </p>
+
+      <p>
+        <label for="id_password1"><i class="fas fa-lock"></i> Contraseña:</label>
+        {{ form.password1 }}
+        <span class="toggle-password" data-target="id_password1">
+          <i class="fa-solid fa-eye-slash"></i>
+        </span>
+      </p>
+
+      <p>
+        <label for="id_password2"><i class="fas fa-lock"></i> Confirmar Contraseña:</label>
+        {{ form.password2 }}
+        <span class="toggle-password" data-target="id_password2">
+          <i class="fa-solid fa-eye-slash"></i>
+        </span>
+      </p>
+
+      <button type="submit" class="btn-primary">{% trans "Registrarse" %}</button>
+    </form>
+
+    {% if providers.google %}
+    <a href="{% provider_login_url 'google' %}" class="btn-google">
+      <i class="fab fa-google"></i> {% trans "Registrarse con Google" %}
+    </a>
+    {% endif %}
+
+    <p class="login-footer">
+      ¿Ya tienes cuenta? <a href="{% url 'account_login' %}">Inicia sesión</a>
+    </p>
+  </div>
+
+  <script>
+    // Mostrar/Ocultar contraseña para múltiples campos
+    document.querySelectorAll(".toggle-password").forEach(toggle => {
+      toggle.addEventListener("click", function () {
+        const targetId = this.getAttribute("data-target");
+        const input = document.getElementById(targetId);
+        const icon = this.querySelector("i");
+
+        const isPassword = input.getAttribute("type") === "password";
+        input.setAttribute("type", isPassword ? "text" : "password");
+
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+      });
+    });
+  </script>
+</body>
+</html>

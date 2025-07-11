@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+<style>
+  .modal.show {
+    z-index: 2000 !important;
+  }
+
+  .blurred {
+    filter: blur(5px);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+  }
+
+  .modal-backdrop.show {
+    opacity: 0.5 !important;
+    backdrop-filter: blur(2px);
+  }
+
+  .glass-bg {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 15px;
+  }
+
+  .glass-input {
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #000;
+  }
+
+  .glass-input::placeholder {
+    color: #555;
+  }
+
+  table tbody tr {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(3px);
+  }
+  
+  .card-header {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  .modal-header,
+  .modal-footer {
+    background-color: transparent !important;
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <h2 class="text-center fw-bold text-uppercase mb-5">Agregar Platillo</h2>
+
+  <div class="row g-4">
+    <!-- FORMULARIO -->
+    <div class="col-lg-3">
+      <div class="card shadow h-100 border-0 glass-bg">
+        <div class="card-header bg-dark text-white text-center fw-semibold">
+          <i class="bi bi-plus-circle me-1"></i> Nuevo Platillo
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              {{ form.nombre|add_class:"form-control glass-input" }}
+              <label for="id_nombre">Nombre</label>
+            </div>
+            <div class="form-floating mb-3">
+              {{ form.tipo|add_class:"form-select glass-input" }}
+              <label for="id_tipo">Tipo</label>
+            </div>
+            <div class="form-floating mb-3">
+              {{ form.precio|add_class:"form-control glass-input" }}
+              <label for="id_precio">Precio</label>
+            </div>
+            <div class="form-floating mb-3">
+              {{ form.descripcion|add_class:"form-control glass-input" }}
+              <label for="id_descripcion">Descripción</label>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Imagen</label>
+              {{ form.imagen }}
+              <div class="mt-2 text-center">
+                <img id="preview-imagen" src="#" alt="Vista previa" class="img-thumbnail" style="display: none; max-width: 100%; max-height: 200px;">
+              </div>
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-1"></i> Guardar Platillo
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIONES -->
+    <div class="col-lg-9">
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for tipo, nombre in tipos.items %}
+          <div class="col">
+            <div class="card shadow border-0 h-100 glass-bg">
+              <div class="card-header bg-dark text-white text-uppercase fw-semibold">
+                {{ nombre }}
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Descripción</th>
+                        <th>Imagen</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for platillo in platillos_por_tipo|get_item:tipo %}
+                        <tr>
+                          <td>{{ platillo.nombre }}</td>
+                          <td>${{ platillo.precio }}</td>
+                          <td>{{ platillo.descripcion }}</td>
+                          <td>
+                            {% if platillo.imagen %}
+                              <img src="{{ platillo.imagen.url }}" class="img-thumbnail" width="70" height="70" alt="Imagen {{ platillo.nombre }}">
+                            {% else %}
+                              <span class="text-muted small">Sin imagen</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            <div class="d-flex flex-column gap-1">
+                              <button class="btn btn-sm btn-outline-primary btn-edit" 
+                                      data-bs-toggle="modal" 
+                                      data-bs-target="#editPlatilloModal"
+                                      data-id="{{ platillo.id }}"
+                                      data-nombre="{{ platillo.nombre }}"
+                                      data-tipo="{{ platillo.tipo }}"
+                                      data-precio="{{ platillo.precio }}"
+                                      data-descripcion="{{ platillo.descripcion }}"
+                                      data-imagen-url="{% if platillo.imagen %}{{ platillo.imagen.url }}{% else %}#{% endif %}">
+                                <i class="bi bi-pencil-square"></i>
+                              </button>
+                              <form action="{% url 'eliminar_platillo' platillo.id %}" method="post" class="d-inline eliminar-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </form>
+                            </div>
+                          </td>
+                        </tr>
+                      {% empty %}
+                        <tr><td colspan="5" class="text-center">No hay platillos registrados</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDICION -->
+<div class="modal fade" id="editPlatilloModal" tabindex="-1" aria-labelledby="editPlatilloModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-bg">
+      <form method="post" id="editPlatilloForm" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="editPlatilloModalLabel">Editar Platillo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="edit-id">
+          <div class="mb-3">
+            <label for="edit-nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control glass-input" name="nombre" id="edit-nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-tipo" class="form-label">Tipo</label>
+            <select class="form-select glass-input" name="tipo" id="edit-tipo" required>
+              {% for t, n in tipos.items %}
+                <option value="{{ t }}">{{ n }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-precio" class="form-label">Precio</label>
+            <input type="number" step="0.01" class="form-control glass-input" name="precio" id="edit-precio" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control glass-input" name="descripcion" id="edit-descripcion" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="edit-imagen" class="form-label">Imagen</label>
+            <input type="file" class="form-control" name="imagen" id="edit-imagen" accept="image/*">
+            <div class="mt-2 text-center">
+              <img id="edit-preview-imagen" src="#" alt="Imagen actual" class="img-thumbnail" style="max-width: 100%; max-height: 200px; display:none;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-save2"></i> Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const editButtons = document.querySelectorAll('.btn-edit');
+  const form = document.getElementById('editPlatilloForm');
+  const mainContent = document.querySelector('.container-fluid');
+  const modal = document.getElementById('editPlatilloModal');
+
+  const editImagenInput = document.getElementById('edit-imagen');
+  const editPreview = document.getElementById('edit-preview-imagen');
+
+  const inputImagen = document.querySelector('input[type="file"][name="imagen"]');
+  const preview = document.getElementById('preview-imagen');
+  if (inputImagen) {
+    inputImagen.addEventListener('change', () => {
+      const file = inputImagen.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = '#';
+        preview.style.display = 'none';
+      }
+    });
+  }
+
+  editButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      document.getElementById('edit-id').value = button.dataset.id;
+      document.getElementById('edit-nombre').value = button.dataset.nombre;
+      document.getElementById('edit-tipo').value = button.dataset.tipo;
+      const precio = parseFloat(button.dataset.precio);
+      document.getElementById('edit-precio').value = isNaN(precio) ? '' : precio;
+      document.getElementById('edit-descripcion').value = button.dataset.descripcion;
+      form.action = button.dataset.url;
+      if (button.dataset.imagenUrl && button.dataset.imagenUrl !== '#') {
+        editPreview.src = button.dataset.imagenUrl;
+        editPreview.style.display = 'block';
+      } else {
+        editPreview.src = '#';
+        editPreview.style.display = 'none';
+      }
+      editImagenInput.value = '';
+    });
+  });
+
+  if (editImagenInput) {
+    editImagenInput.addEventListener('change', () => {
+      const file = editImagenInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          editPreview.src = e.target.result;
+          editPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        editPreview.src = '#';
+        editPreview.style.display = 'none';
+      }
+    });
+  }
+
+  modal.addEventListener('show.bs.modal', () => {
+    mainContent.classList.add('blurred');
+  });
+  modal.addEventListener('hidden.bs.modal', () => {
+    mainContent.classList.remove('blurred');
+  });
+
+  const eliminarForms = document.querySelectorAll('.eliminar-form');
+  eliminarForms.forEach(form => {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción no se puede revertir",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+});
+</script>
+{% endblock %}

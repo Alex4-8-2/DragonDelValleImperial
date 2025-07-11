@@ -1,0 +1,59 @@
+/* ==== ESTILO PERSONALIZADO DE MENÚ Y SUBMENÚ === */
+
+/* Texto blanco por defecto en enlaces del menú y submenús */
+.nav-link,
+.nav-item .nav-link,
+.nav-item .nav-link i,
+.nav-item .dropdown-item {
+  color: white !important;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover: texto naranja */
+.nav-link:hover,
+.nav-item .nav-link:hover,
+.nav-item .dropdown-item:hover {
+  color: #ffc107 !important;
+}
+
+/* Fondo del submenú oscuro con animación */
+.nav-item .dropdown-menu {
+  background-color: #212529 !important;
+  border: none;
+  animation: slideDown 0.4s ease;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10%);
+  transition: all 0.3s ease;
+  position: absolute;
+  z-index: 1000;
+}
+
+/* Mostrar submenú al hacer hover */
+.nav-item:hover .dropdown-menu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+/* Animación personalizada para entrada del submenú */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+/* Icono flecha blanco, cambia a naranja en hover */
+.toggle-icon {
+  color: white;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.nav-link:hover .toggle-icon {
+  color: #ffc107;
+}

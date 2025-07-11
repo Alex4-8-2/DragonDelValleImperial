@@ -1,0 +1,480 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Tipografías y librerías -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<style>
+  @font-face {
+    font-family: 'MelodrameFont';
+    src: url("{% static 'fonts/Saudagar.ttf' %}") format('truetype');
+  }
+
+  .reserva-container {
+    max-width: 850px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .reserva-container h2 {
+    text-align: center;
+    font-family: 'MelodrameFont', serif;
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section {
+    margin-bottom: 1.8rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-control {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.6rem 0.9rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  .form-control::placeholder {
+    color: #cccccc;
+  }
+
+  .form-control:focus {
+    border-color: #b1b6b6;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+    outline: none;
+  }
+
+  .btn-outline-primary,
+  .btn-outline-secondary {
+    transition: 0.3s;
+    border-radius: 10px;
+  }
+
+  .btn-outline-primary:hover,
+  .btn-outline-secondary:hover,
+  .btn.active {
+    background-color: #b1b6b6;
+    color: #fff;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 14px;
+    background-color: #6b706e;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .submit-btn:hover {
+    background-color: #6b706e;
+  }
+
+  .personas-btns,
+  .horarios-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .icono {
+    font-size: 1rem;
+    color: #b1b6b6;
+  }
+
+  .form-section label.form-label:has(.fa-users),
+  .form-section label.form-label:has(.fa-credit-card),
+  .form-section .form-check-label {
+    color: #b1b6b6;
+  }
+
+  .personas-btns button,
+  #custom-personas {
+    color: #b1b6b6;
+    border-color: #b1b6b6;
+  }
+
+  .persona-btn.active,
+  .horarios-btns button.active {
+    background-color: #b1b6b6 !important;
+    color: #000 !important;
+    border-color: #b1b6b6 !important;
+  }
+
+  .horarios-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0; 
+    padding: 0;
+    margin: 0;
+  }
+
+  .horarios-btns .btn {
+    margin: 0;
+    color: white !important;
+    background-color: transparent;
+    border: none; 
+    border-radius: 160; 
+    padding: 8px 12px;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .horarios-btns .btn:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* opcional */
+    color: #b1b6b6 !important;
+  }
+
+  .personas-btns .persona-btn {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  .form-check-input:checked + .form-check-label {
+    color: #b1b6b6;
+    font-weight: bold;
+  }
+
+  .form-check-input {
+    border-color: #b1b6b6;
+    background-color: rgba(238, 232, 232, 0.15);
+  }
+
+  .flatpickr-calendar.inline {
+    margin-left: 120px !important;
+  }
+
+  .flatpickr-calendar,
+  .flatpickr-calendar span,
+  .flatpickr-calendar .flatpickr-day,
+  .flatpickr-calendar .flatpickr-weekday,
+  .flatpickr-calendar .flatpickr-months,
+  .flatpickr-calendar .flatpickr-current-month,
+  .flatpickr-calendar .flatpickr-monthDropdown-months,
+  .flatpickr-calendar .flatpickr-weekdays {
+    color: white !important;
+  }
+
+  .flatpickr-day {
+    color: white;
+    transition: color 0.3s, background 0.3s;
+  }
+
+  .flatpickr-day.flatpickr-disabled {
+    color: #999 !important;
+    background: transparent !important;
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .flatpickr-day:not(.flatpickr-disabled):hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #b1b6b6 !important;
+    border-radius: 8px;
+  }
+
+  .flatpickr-day.selected,
+  .flatpickr-day.startRange,
+  .flatpickr-day.endRange {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white !important;
+  }
+
+  .flatpickr-day.today:not(.selected) {
+    border: 1px ;
+    color: white !important;
+    background-color: rgba(177, 182, 182, 0.2); 
+    backdrop-filter: blur(4px); 
+    -webkit-backdrop-filter: blur(4px); 
+    border-radius: 8px;
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  }
+
+  .flatpickr-calendar {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+    border: none;
+  }
+
+  .flatpickr-day {
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+
+  .flatpickr-day:not(.flatpickr-disabled):hover {
+    background-color: rgba(177, 182, 182, 0.2); /* color vidrio */
+    backdrop-filter: blur(4px); 
+    -webkit-backdrop-filter: blur(4px);
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 8px;
+  }
+
+  .flatpickr-day.prevMonthDay,
+  .flatpickr-day.nextMonthDay {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .flatpickr-day:focus,
+  .flatpickr-day:focus-visible,
+  .flatpickr-day.selected:focus,
+  .flatpickr-day.today:focus,
+  .flatpickr-day:hover,
+  .flatpickr-day:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .flatpickr-day.selected {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .form-check-input:checked {
+    background-color: #b1b6b6;
+    border-color: #b1b6b6;
+  }
+
+  .form-check-input {
+    border-color: #b1b6b6;
+  }
+
+  .form-check-input:focus {
+    box-shadow: 0 0 10px rgba(161, 155, 155, 0.3);
+  }
+
+  .form-check-label {
+    color: #e0e0e0;
+  }
+
+  .form-check-input {
+    background-color: rgba(238, 232, 232, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+</style>
+
+<div class="reserva-container">
+  <h2> Realiza tu reserva</h2>
+  <form id="reserva-form" method="post" action="{% url 'realizar_reserva' %}">
+    {% csrf_token %}
+
+    <!-- PERSONAS -->
+    <div class="form-section">
+      <label class="form-label"><i class="fas fa-users icono"></i> ¿Cuántas personas?</label>
+      <input type="hidden" name="personas" id="personas-hidden">
+      <div class="personas-btns">
+        {% for n in "12345678" %}
+          <button type="button" class="btn btn-outline-primary persona-btn" data-value="{{ n }}">{{ n }}</button>
+        {% endfor %}
+        <input type="number" id="custom-personas" min="1" placeholder="Otro" class="form-control" style="width: 100px;" />
+      </div>
+    </div>
+
+    <!-- GRUPO -->
+    <div class="form-section">
+      <label class="form-label"><i class="fas fa-people-group icono"></i> Grupo especial</label>
+      <input type="text" name="grupo" class="form-control" placeholder="Ej: Familia, Compañeros de trabajo, Amigos..." >
+    </div>
+
+    <!-- FECHA -->
+    <div class="form-section row">
+      <div class="col-md-6 text-center">
+        <label class="form-label text-start d-block"><i class="fas fa-calendar icono"></i> Fecha</label>
+        <div id="calendario-visible"></div>
+      </div>
+      <div class="col-md-6 d-flex justify-content-center align-items-start">
+        <input type="text" id="fecha" name="fecha" class="form-control" placeholder="Año / Mes / Día" required style="margin-top: 160px; width: 150px; text-align: center;">
+      </div>
+    </div>
+
+    <!-- HORA -->
+    <div class="form-section">
+      <label class="form-label"><i class="fas fa-clock icono"></i> Hora</label>
+      <input type="hidden" name="hora" id="hora-hidden">
+      <div class="horarios-btns">
+        {% for h in horarios %}
+          <button type="button" class="btn btn-outline-secondary" data-hora="{{ h }}">{{ h }}</button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- DÍA ESPECIAL -->
+    <div class="form-section">
+      <label class="form-label"><i class="fas fa-star icono"></i> Día especial</label>
+      <input type="text" name="dia_especial" class="form-control" placeholder="Ej: Aniversario, Día del Padre ...">
+    </div>
+
+    <!-- MÉTODO DE PAGO -->
+    <div class="form-section">
+      <label class="form-label"><i class="fas fa-credit-card icono"></i> Método de pago</label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="metodo_pago" value="efectivo" id="pagoEfectivo" checked>
+        <label class="form-check-label" for="pagoEfectivo"><i class="fas fa-money-bill-wave me-1"></i> Efectivo</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="metodo_pago" id="pagoTarjeta" value="tarjeta">
+        <label class="form-check-label" for="pagoTarjeta"><i class="fas fa-credit-card me-1"></i> Tarjeta</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="metodo_pago" id="pagoQR" value="qr">
+        <label class="form-check-label" for="pagoQR"><i class="fas fa-qrcode me-1"></i> QR</label>
+      </div>
+    </div>
+
+    <!-- COMENTARIOS O SOLICITUDES -->
+    <div class="form-section">
+      <label class="form-label"><i class="fas fa-comment-dots icono"></i> Comentarios o solicitudes especiales</label>
+      <textarea name="comentarios" class="form-control" rows="3" placeholder="Ej: silla para niños, decoración especial..."></textarea>
+    </div>
+
+    <!-- BOTÓN -->
+    <button type="submit" class="submit-btn"><i class="fas fa-check-circle"></i> Reservar ahora</button>
+  </form>
+</div>
+
+<script>
+  // Selección de personas
+  document.querySelectorAll('.persona-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('custom-personas').value = '';
+      document.getElementById('personas-hidden').value = btn.dataset.value;
+    });
+  });
+
+  document.getElementById('custom-personas').addEventListener('input', function () {
+    if (this.value) {
+      document.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('personas-hidden').value = this.value;
+    }
+  });
+
+  // Selección de hora
+  document.querySelectorAll('.horarios-btns button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.horarios-btns button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('hora-hidden').value = btn.getAttribute('data-hora');
+    });
+  });
+
+  // Fecha
+  document.addEventListener("DOMContentLoaded", function () {
+    flatpickr("#calendario-visible", {
+      inline: true,
+      minDate: "today",
+      dateFormat: "Y-m-d",
+      locale: "es",
+      disableMobile: true,
+      onChange: function(selectedDates, dateStr) {
+        document.getElementById("fecha").value = dateStr;
+      }
+    });
+  });
+
+   flatpickr("#calendario-visible", {
+      inline: true,
+      minDate: "today",
+      dateFormat: "Y-m-d",
+      locale: "es",
+      disableMobile: true,
+      onChange: function(selectedDates, dateStr, instance) {
+        
+      }
+    });
+
+  // Validación y confirmación visual al enviar
+  document.getElementById('reserva-form').addEventListener('submit', function (e) {
+    e.preventDefault(); 
+
+    const personas = document.getElementById('personas-hidden').value;
+    const hora = document.getElementById('hora-hidden').value;
+    const fecha = document.querySelector('[name="fecha"]').value;
+    const grupo = document.querySelector('[name="grupo"]').value;
+    const dia_especial = document.querySelector('[name="dia_especial"]').value;
+    const metodo_pago = document.querySelector('input[name="metodo_pago"]:checked')?.value || "No seleccionado";
+    const comentarios = document.querySelector('[name="comentarios"]')?.value || "Ninguno";
+
+    if (!personas || !hora) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos incompletos',
+        text: 'Selecciona la cantidad de personas y la hora para continuar.'
+      });
+      return;
+    }
+
+    // Mostrar resumen antes de confirmar
+    Swal.fire({
+      title: '¿Confirmar reserva?',
+      html: `
+        <strong>Fecha:</strong> ${fecha}<br>
+        <strong>Hora:</strong> ${hora}<br>
+        <strong>Personas:</strong> ${personas}<br>
+        <strong>Grupo:</strong> ${grupo}<br>
+        <strong>Día especial:</strong> ${dia_especial}<br>
+        <strong>Pago:</strong> ${metodo_pago}<br>
+        <strong>Comentarios:</strong> ${comentarios}
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.setItem('reserva_confirmada', 'true');
+        e.target.submit(); // Enviar si confirma
+      }
+    });
+  });
+
+  // Mostrar mensaje después de enviar el formulario si se confirmó
+  document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem('reserva_confirmada') === 'true') {
+      localStorage.removeItem('reserva_confirmada'); // Limpiar para futuros envíos
+      Swal.fire({
+        icon: 'success',
+        title: '¡Reserva exitosa!',
+        text: 'El comprobante se le enviará a su correo electrónico.',
+        footer: '<small class="text-muted">Puede editar los detalles de su reserva entrando a su perfil.</small>',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+  });
+</script>
+
+{% endblock %}

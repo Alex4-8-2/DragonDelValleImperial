@@ -1,0 +1,500 @@
+/* ======= GENERALES ======= */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body.fondo-pagina {
+    background-image: url("/static/imagen/restaurante12.jpg"); 
+    background-size: cover;              
+    background-repeat: no-repeat;        
+    background-position: center center;  
+    background-attachment: fixed;        
+    min-height: 100vh;
+    font-size: 12px;
+}
+
+/* ======= RESPONSIVE ======= */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .user-actions {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    #sidebar .btn-usuario i,
+    #sidebar .btn-salir i {
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        padding: 8px;
+    }
+
+    #sidebar .btn-user-logout span {
+        display: none;
+        position: static;
+        transform: none;
+        background-color: transparent;
+        padding: 0;
+        font-size: 0.7rem;
+        color: #333;
+    }
+
+    #sidebar img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    #main-content, .content-container {
+        margin-left: 0 !important;
+        padding: 10px;
+    }
+}
+
+/* ======= SIDEBAR ======= */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: hsla(60, 100%, 96%, 0.979); 
+    color: #0c0b0b;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar .nav-link {
+    color: #0c0b0b;
+}
+
+#sidebar .nav-link:hover {
+    color: #f0c040;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#main-content {
+    margin-left: 250px; 
+    padding: 20px;
+}
+
+/* ======= USUARIO Y SALIR ======= */
+.user-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding-left: 15px;
+    margin-top: 60px;  /* <-- AJUSTA ESTE VALOR */
+}
+
+#sidebar .btn-user-logout {
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    border: none;
+}
+
+#sidebar .btn-user-logout span {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #242323;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    z-index: 999;
+    pointer-events: none;
+}
+
+#sidebar .btn-user-logout:hover span {
+    display: inline-block;
+}
+
+#sidebar .btn-usuario {
+    border-radius: 50%;
+    border: none;
+    position: relative;
+}
+
+#sidebar .btn-usuario i,
+#sidebar .btn-salir i {
+    font-size: 1.9rem;
+    color: rgb(92, 92, 92);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+#sidebar .btn-usuario:hover i {
+    background-color: rgba(201, 201, 201, 0.911);
+    color: #333;
+}
+
+#sidebar .btn-salir {
+    margin-left: 4px;
+    border: none;
+}
+
+#sidebar .btn-salir:hover i {
+    background-color: rgba(201, 201, 201, 0.911);
+    color: #f70404;
+}
+
+/* ======= TIPOGRAFÍA ======= */
+h1, h2, h3, .titulo-principal {
+    font-family: 'Playfair Display', serif;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+h2 {
+    font-size: 2rem;
+}
+h3 {
+    font-size: 1.5rem;
+}
+
+/* ======= ALERTAS PERSONALIZADAS ======= */
+.custom-alert {
+    background-color: rgba(148, 139, 139, 0.253);
+    color: #ffc402;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+}
+
+/* ======= SECCIONES TRANSPARENTES ======= */
+.cuadro-transparente {
+    background-color: rgba(255, 255, 255, 0.123);
+    padding: 20px;
+    border-radius: 10px;
+    color: #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+/* ======= TEXTOS PERSONALIZADOS ======= */
+.titulo-info,
+.titulo-accesibilidad {
+    color: #f7be05;
+    text-align: center;
+}
+
+.texto-info,
+.texto-accesibilidad {
+    color: #eaebec;
+}
+
+/* ======= TARJETAS Y TABLAS ======= */
+.card, .table, .content-container {
+    background-color: rgba(129, 125, 125, 0.8);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+table.table {
+    background-color: rgba(0, 0, 0, 0.4); 
+    color: white; 
+    border-collapse: collapse;            
+    width: 100%;
+    border: 2px solid rgba(80, 80, 80, 0.6);
+}
+
+table.table th {
+    background-color: rgba(170, 168, 163, 0.8); 
+    color: white; 
+}
+
+table.table td {
+    background-color: rgba(170, 168, 163, 0.8);
+    border: 1px solid rgba(80, 80, 80, 0.6);
+    color: white;
+}
+
+button, input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+h1, h2 {
+    color: rgb(255, 196, 0);
+}
+
+/* ======= TARJETAS FLIP ======= */
+.flip-card {
+    background-color: transparent;
+    width: 100%;
+    height: 300px;
+    perspective: 1000px;
+    margin-bottom: 20px;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 1px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.flip-card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flip-card-back {
+    background-color: #f7be05;
+    color: black;
+    transform: rotateY(180deg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ==== GENERAL ==== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ==== FONDO GENERAL ==== */
+.login-body {
+    height: 100vh;
+    background: url("/static/imagen/paisaje1.jpg") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ==== CONTENEDOR GENERAL ==== */
+.login-fullscreen {
+    display: flex;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.login-container {
+    width: 100%; /* Hace que el formulario ocupe todo el ancho disponible */
+    max-width: 600px; /* Limita el ancho máximo del formulario */
+    padding: 40px;
+    backdrop-filter: blur(10px);
+    color: white;
+    border-radius: 10px;
+}
+
+/* ==== LOGIN PAGE ==== */
+.login-page {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.login-form h2 {
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #42a5f5;
+}
+
+/* ==== REGISTRO PAGE ==== */
+.registro-page {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==== INPUTS COMUNES ==== */
+.input-container {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 10px 12px 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 15px;
+}
+
+.form-control::placeholder {
+    color: transparent;
+}
+
+.floating-label {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+    color: #aaa;
+    transition: 0.2s;
+    pointer-events: none;
+}
+
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+    top: -10px;
+    font-size: 12px;
+    color: #42a5f5;
+}
+
+/* ==== ÍCONOS ==== */
+.eye {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    color: #999;
+    font-size: 18px;
+}
+
+/* ==== OPCIONES DE LOGIN ==== */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.login-options a {
+    color: #42a5f5;
+    text-decoration: none;
+}
+
+/* ==== BOTÓN ==== */
+.btn-primary {
+    background-color: #42a5f5;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1e88e5;
+}
+
+/* ==== ENLACE DE REGISTRO ==== */
+.login-register-link {
+    margin-top: 20px;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.login-register-link a {
+    color: #42a5f5;
+    text-decoration: none;
+}
+
+/* ==== IMAGEN AL LADO (OPCIONAL) ==== */
+.login-image {
+    flex: 0 0 50%; /* Ocupa el 50% del espacio */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: transparent;
+}
+
+.login-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ==== ELIMINAR BORDES AL HACER FOCUS O AL PASAR EL MOUSE SOBRE LOS CAMPOS ==== */
+.form-control:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid transparent;
+}
+
+.form-control:hover {
+    border: 1px solid transparent;
+}
+
+/* ==== ELIMINAR TRANSICIONES ==== */
+.form-control {
+    transition: none; /* Elimina cualquier tipo de transición */
+    border: 1px solid transparent; /* Asegura que no haya borde por defecto */
+}
+
+/* ==== AL HACER FOCUS O PASAR EL MOUSE SOBRE LOS CAMPOS ==== */
+.form-control:focus, 
+.form-control:hover {
+    border: 1px solid transparent; /* Evita que cambie el borde al hacer hover o focus */
+    box-shadow: none; /* Elimina cualquier sombra */
+    outline: none; /* Elimina el contorno al enfocar */
+}

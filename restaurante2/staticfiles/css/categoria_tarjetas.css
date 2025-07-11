@@ -1,0 +1,127 @@
+/* ----------------------------
+   ESTILOS ORIGINALES (CARD FLIP)
+----------------------------- */
+.card-hover-effect {
+  perspective: 1000px;
+  width: 100%;
+  height: 320px;
+  margin-bottom: 1rem;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.card-hover-effect:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  padding: 1rem;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-front {
+  align-items: center;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background-color: #212529;
+  color: white;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.card-front img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+
+/* ----------------------------
+   NUEVOS ESTILOS (EXPANDING CARD)
+----------------------------- */
+
+.card-expanding {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.card-expanding:hover {
+  transform: translateY(-5px);
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card-expanding:hover .card-image {
+  transform: scale(1.05);
+}
+
+.card-info {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  width: 90%;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.card-expanding:hover .card-info {
+  transform: translate(-50%, 0%);
+  opacity: 1;
+}
+
+.card-info .location {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.card-info .title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0.2rem 0;
+}
+
+.card-info .price {
+  color: #2c7a7b;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.card-info .description {
+  font-size: 0.9rem;
+  color: #555;
+}

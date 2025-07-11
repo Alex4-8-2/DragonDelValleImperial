@@ -1,0 +1,54 @@
+/* Posicionamiento de los dropdowns como ventanas flotantes */
+.nav-item.dropdown {
+  position: relative;
+}
+
+.nav-item .submenu {
+  display: none;
+  position: absolute;
+  top: 100%; /* justo debajo del botón */
+  left: 0;
+  z-index: 1050; /* sobre banner */
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 8px;
+  min-width: 220px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  padding: 0.5rem 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-item .submenu .dropdown-item {
+  color: #fff;
+  padding: 10px 20px;
+  white-space: nowrap;
+  transition: background 0.3s ease;
+}
+
+.nav-item .submenu .dropdown-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.nav-item:hover > .submenu {
+  display: block;
+}
+
+/* Asegúrate que el banner no se tape por menú */
+.banner-box {
+  z-index: 1;
+  position: relative;
+}
+
+/* Navbar debe estar sobre el banner */
+.navbar {
+  z-index: 999;
+  position: relative;
+}
+
+.nav-item:hover .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

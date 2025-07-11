@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Menú Principal</h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for categoria in categorias %}
+        <div class="col">
+            <a href="{% url 'mostrar_categoria' categoria.slug %}" class="text-decoration-none">
+                <div class="card h-100 shadow">
+                    {% if categoria.imagen %}
+                        <img src="{{ categoria.imagen }}" class="card-img-top" alt="{{ categoria.nombre }}">
+                    {% else %}
+                        <img src="{% static 'imagen/logo.png' %}" class="card-img-top" alt="Imagen por defecto">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ categoria.nombre }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

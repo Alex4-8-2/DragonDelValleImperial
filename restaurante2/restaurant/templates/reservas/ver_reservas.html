@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="text-center mb-4"><i class="fas fa-calendar-check"></i> Reservas Registradas</h1>
+
+<!-- FILTROS -->
+<form method="get" class="row g-3 mb-3">
+  <div class="col-md-3">
+    <input type="text" name="usuario" class="form-control" placeholder="Buscar por usuario" value="{{ usuario }}">
+  </div>
+  <div class="col-md-3">
+    <input type="date" name="fecha" class="form-control" value="{{ fecha }}">
+  </div>
+  <div class="col-md-3">
+    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
+    <a href="{% url 'ver_reservas' %}" class="btn btn-secondary">Limpiar</a>
+  </div>
+</form>
+
+<!-- BOTONES DE ACCIÓN -->
+<div class="mb-3 d-flex gap-2 flex-wrap">
+  <button type="button" class="btn btn-danger" onclick="confirmarEliminacion()">
+    <i class="bi bi-trash3-fill"></i> Eliminar Reservas Pasadas
+  </button>
+
+  <button type="button" id="btn-eliminar-seleccionadas" class="btn btn-danger d-none">
+    <i class="bi bi-trash3-fill"></i> Eliminar Seleccionadas
+  </button>
+</div>
+
+<!-- FORMULARIOS OCULTOS -->
+<form id="form-eliminar-seleccionadas" method="post" action="{% url 'eliminar_reservas_multiples' %}">
+  {% csrf_token %}
+  <input type="hidden" name="ids" id="reserva-ids">
+</form>
+
+<form id="form-eliminar-pasadas" method="post" action="{% url 'eliminar_reservas_pasadas' %}" style="display: none;">
+  {% csrf_token %}
+</form>
+
+<!-- TABLA DE RESERVAS -->
+<div class="card">
+  <div class="card-header"><i class="fas fa-list"></i> Lista de Reservas</div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm">
+        <thead class="table-primary">
+          <tr>
+            <th><input type="checkbox" id="select-all"></th>
+            <th>Usuario</th>
+            <th>Personas</th>
+            <th>Grupo</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Estado</th>
+            <th>Día Especial</th>
+            <th>Comentarios</th>
+            <th>Registrado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reserva in reservas %}
+            {% with reserva.actualizar_estado as _ %}
+            <tr>
+              <td><input type="checkbox" class="reserva-checkbox" value="{{ reserva.id }}"></td>
+              <td>{{ reserva.usuario.get_full_name|default:reserva.usuario.username }}</td>
+              <td>{{ reserva.personas }}</td>
+              <td>{{ reserva.grupo|default:"Ninguno" }}</td>
+              <td>{{ reserva.fecha }}</td>
+              <td>{{ reserva.hora }}</td>
+              <td class="text-center">
+                {% if reserva.estado == 'activa' %}
+                  <i class="bi bi-check-circle-fill text-success" title="Activa" style="font-size: 1.3rem;"></i>
+                {% else %}
+                  <i class="bi bi-x-circle-fill text-danger" title="Pasada" style="font-size: 1.3rem;"></i>
+                {% endif %}
+              </td>
+              <td>{{ reserva.dia_especial|default:"Ninguno" }}</td>
+              <td>{{ reserva.comentarios|default:"Ninguno" }}</td>
+              <td>{{ reserva.creado_en|date:"Y-m-d H:i" }}</td>
+              <td>
+                <div class="d-flex flex-column gap-1">
+                  <!-- Cambiar estado -->
+                  <form method="post" action="{% url 'cambiar_estado_reserva' reserva.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm {% if reserva.estado == 'activa' %}btn-success{% else %}btn-secondary{% endif %}">
+                      {% if reserva.estado == 'activa' %}Activo{% else %}Inactivo{% endif %}
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endwith %}
+          {% empty %}
+            <tr>
+              <td colspan="11" class="text-center">No hay reservas</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINACIÓN -->
+    <nav>
+      <ul class="pagination justify-content-center">
+        {% if reservas.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ reservas.previous_page_number }}{% if fecha %}&fecha={{ fecha }}{% endif %}{% if usuario %}&usuario={{ usuario }}{% endif %}">Anterior</a>
+          </li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ reservas.number }}</span></li>
+        {% if reservas.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ reservas.next_page_number }}{% if fecha %}&fecha={{ fecha }}{% endif %}{% if usuario %}&usuario={{ usuario }}{% endif %}">Siguiente</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+
+
+<script>
+  // SweetAlert para eliminar reservas pasadas
+  function confirmarEliminacion() {
+    Swal.fire({
+      title: '¿Deseas eliminar las reservas pasadas?',
+      html: `<p>Se eliminarán todas las reservas cuya fecha ya ha pasado.</p><strong>¿Estás seguro?</strong>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('form-eliminar-pasadas').submit();
+      }
+    });
+  }
+
+  // SweetAlert para eliminar reserva individual
+  document.querySelectorAll('.form-eliminar-reserva').forEach(form => {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      Swal.fire({
+        title: '¿Eliminar esta reserva?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+
+  // Selección múltiple
+  const checkboxes = document.querySelectorAll('.reserva-checkbox');
+  const selectAll = document.getElementById('select-all');
+  const btnEliminarSeleccionadas = document.getElementById('btn-eliminar-seleccionadas');
+  const formEliminarSeleccionadas = document.getElementById('form-eliminar-seleccionadas');
+  const inputIds = document.getElementById('reserva-ids');
+
+  function actualizarBotonEliminar() {
+    const seleccionadas = Array.from(checkboxes).filter(c => c.checked);
+    btnEliminarSeleccionadas.classList.toggle('d-none', seleccionadas.length < 2);
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', actualizarBotonEliminar));
+  selectAll.addEventListener('change', () => {
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    actualizarBotonEliminar();
+  });
+
+  btnEliminarSeleccionadas.addEventListener('click', () => {
+    const ids = Array.from(checkboxes)
+      .filter(c => c.checked)
+      .map(c => c.value);
+    if (ids.length > 0) {
+      Swal.fire({
+        title: '¿Eliminar reservas seleccionadas?',
+        html: `<p>Se eliminarán <strong>${ids.length}</strong> reservas.</p>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          inputIds.value = ids.join(',');
+          formEliminarSeleccionadas.submit();
+        }
+      });
+    }
+  });
+</script>
+
+<!-- SweetAlert mensajes de éxito -->
+{% for message in messages %}
+  {% if 'eliminar_individual' in message.tags or 'eliminar_pasadas' in message.tags or 'eliminar_multiples' in message.tags %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          html: `<p>{{ message|escapejs }}</p>`,
+          confirmButtonColor: '#3085d6'
+        });
+      });
+    </script>
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

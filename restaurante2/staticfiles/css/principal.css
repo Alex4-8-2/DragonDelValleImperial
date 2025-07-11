@@ -1,0 +1,295 @@
+/* === FONDO GENERAL SIN MARCO === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+  background-color: #2b2929;
+  background-size: cover;
+  color: #ffffff;
+}
+h1, h2, h3, h4, .section-title {
+  font-family: 'Playfair Display', serif;
+}
+
+/* === SECCIONES COMUNES TRANSPARENTES === */
+.banner,
+.info,
+.carousel-section,
+.earth-3d-section,
+main {
+  position: relative;
+  background: transparent !important;
+  color: white;
+  padding: 2rem;
+  z-index: 1;
+}
+
+/* === BANNER PRINCIPAL TRANSPARENTE === */
+.banner {
+  position: relative;
+  background-image: url('../imagen/fondo.png');
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.banner-content {
+  z-index: 2;
+  text-align: center;
+  padding-top: 120px;
+}
+
+.navbar-overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  padding: 1rem 2rem;
+}
+
+.banner-content h1, .banner-content p {
+  color: #fff;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+}
+
+.btn-banner {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.btn-banner:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+/* === TÍTULOS GENERALES === */
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: white;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.info h4 {
+  font-weight: 600;
+}
+
+/* === CITA EN CARRUSEL === */
+.carousel-section blockquote {
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #f1f1f1;
+}
+
+/* === ESTRELLAS DE VALORACIÓN === */
+.star-rating {
+  direction: rtl;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.star-rating input[type="radio"] {
+  display: none;
+}
+
+.star-rating label {
+  font-size: 2rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: gold;
+}
+
+.star {
+  cursor: pointer;
+  transition: fill 0.2s;
+}
+
+.star.filled {
+  fill: gold;
+  stroke: gold;
+}
+
+.star.half {
+  fill: url(#halfGradient);
+  stroke: gold;
+}
+
+.rating-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 2.5rem;
+  cursor: pointer;
+}
+
+.rating-star {
+  color: lightgray;
+  transition: color 0.2s;
+}
+
+.rating-fill {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  color: gold;
+  pointer-events: none;
+}
+
+.star-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* === FECHA / HORA === */
+.fecha-hora {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+/* === ANIMACIONES === */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+/* === SECCIÓN EARTH 3D === */
+.earth-3d-section {
+  text-align: center;
+  color: white;
+  padding: 4rem 1rem;
+  background: transparent !important;
+}
+
+.earth-title {
+  font-size: 2.5rem;
+  color: #f9a825;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+#earthContainer {
+  width: 100%;
+  max-width: 700px;
+  height: 400px;
+  margin: 0 auto;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.earth-btn {
+  margin-top: 1.5rem;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 2rem;
+  text-decoration: none;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.earth-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+#datetime {
+  font-family: 'Segoe UI', sans-serif;
+  color: #ffffff;
+}
+
+.section-title,
+.banner-content h1,
+.banner-content p,
+h4 {
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+}
+
+/* === ESTILO PERSONALIZADO DE MENÚ Y SUBMENÚ === */
+
+/* Texto blanco por defecto en enlaces del menú y submenús */
+.nav-link,
+.nav-item .nav-link,
+.nav-item .nav-link i,
+.nav-item .dropdown-item {
+  color: white !important;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover: texto naranja */
+.nav-link:hover,
+.nav-item .nav-link:hover,
+.nav-item .dropdown-item:hover {
+  color: #ffc107 !important;
+}
+
+/* Fondo del submenú oscuro con animación */
+.nav-item .dropdown-menu {
+  background-color: #212529 !important;
+  border: none;
+  animation: slideDown 0.4s ease;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10%);
+  transition: all 0.3s ease;
+  position: absolute;
+  z-index: 1000;
+}
+
+/* Mostrar submenú al hacer hover */
+.nav-item:hover .dropdown-menu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+/* Icono flecha blanco, cambia a naranja en hover */
+.toggle-icon {
+  color: white;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.nav-link:hover .toggle-icon {
+  color: #ffc107;
+}

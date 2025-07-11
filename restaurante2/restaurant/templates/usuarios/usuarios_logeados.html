@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+  <h2>Usuarios Logeados</h2>
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Nombre completo</th>
+        <th>Es superusuario</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usuario in usuarios_logeados %}
+      <tr>
+        <td>{{ usuario.username }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.get_full_name }}</td>
+        <td>{% if usuario.is_superuser %}Sí{% else %}No{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">No hay usuarios logeados.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

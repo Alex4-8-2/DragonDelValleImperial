@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block banner %}
+<div class="d-flex flex-column justify-content-center align-items-center text-center py-5">
+  <div class="titulo-superpuesto">
+    <h1 class="fw-bold text-white">EL DRAGÓN DEL VALLE IMPERIAL</h1>
+  </div>
+  <img src="{% static 'imagen/logo.png' %}" alt="Logo" class="logo-img my-4" style="max-width: 300px; height: auto;">
+  <div class="fecha-hora text-white" style="font-size: 1.2rem;">
+    <p class="mb-1"> <strong>Fecha:</strong> <span id="fecha"></span></p>
+    <p><strong>Hora:</strong> <span id="hora"></span></p>
+  </div>
+  <div class="mt-4 d-flex gap-3">
+    <button id="mostrarComentariosBtn" class="btn btn-warning">Comentarios</button>
+    <a href="https://www.google.com/maps?q=Illimani,+Bolivia" target="_blank" class="btn btn-outline-primary">Ver Ubicación</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="blur-overlay"></div>
+<main class="container py-5" id="contenido-principal">
+
+  <!-- MODAL GRANDE PARA COMENTARIOS -->
+  <div id="comentariosModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content frosted-glass comentarios-modal-content position-relative p-4 text-white rounded">
+      <button id="cerrarComentariosModal" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" aria-label="Cerrar"></button>
+      <h3 class="mb-4">Opiniones de nuestros clientes</h3>
+
+      {% if messages %}
+        <div class="container mb-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if comentarios %}
+        <div id="commentsCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% for comentario in comentarios %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}" data-id="{{ comentario.id }}">
+                <div class="comentario-card frosted-glass text-white p-4 shadow mx-auto d-flex align-items-start" style="max-width: 600px;">
+                    <div class="comentario-avatar me-3 flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle bg-warning" style="width: 64px; height: 64px;">
+                      {% if comentario.usuario and comentario.usuario.profile_image %}
+                        <img 
+                          src="{{ comentario.usuario.profile_image.url }}" 
+                          alt="Avatar de {{ comentario.nombre }}" 
+                          class="rounded-circle" 
+                          width="64" height="64" 
+                          loading="lazy" 
+                        />
+                      {% else %}
+                        <i class="bi bi-person-fill" style="font-size: 2.5rem; color: white;"></i>
+                      {% endif %}
+                    </div>
+                  <div class="comentario-contenido flex-grow-1">
+                    <h5 class="card-title mb-1">{{ comentario.nombre }}</h5>
+                    <p class="card-text mb-2">{{ comentario.texto }}</p>
+                    <div class="text-warning mb-1">
+                      {% for i in "12345" %}
+                        {% if forloop.counter <= comentario.puntuacion %}
+                          ★
+                        {% else %}
+                          ☆
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                    <p class="fecha-hora-comentario text-muted" style="font-size: 0.85rem;">
+                      {{ comentario.fecha_hora|date:"d/m/Y h:i A" }}
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+            {% endfor %}
+
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#commentsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#commentsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+          </button>
+        </div>
+
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+          <form id="formEliminar" method="POST" class="mt-3" action="">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Eliminar comentario actual</button>
+          </form>
+        {% endif %}
+      {% else %}
+        <p class="text-muted">Aún no hay comentarios.</p>
+      {% endif %}
+
+      <div class="text-center mt-4">
+        <button id="abrirAgregarComentarioBtn" class="btn btn-warning">Comentar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PEQUEÑO PARA AGREGAR COMENTARIO -->
+  <div id="comentarioModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content frosted-glass position-relative p-4 text-white rounded" style="max-width: 500px;">
+      <button id="cerrarAgregarComentarioModal" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" aria-label="Cerrar"></button>
+      <h3 class="mb-3">Agregar Comentario</h3>
+      <form method="POST" action="{% url 'agregar_comentario' %}">
+        {% csrf_token %}
+        <div class="star-rating mb-3">
+          {% for i in "54321" %}
+            <input type="radio" id="star{{ i }}" name="puntuacion" value="{{ i }}">
+            <label for="star{{ i }}">★</label>
+          {% endfor %}
+        </div>
+        <input type="text" name="nombre" class="form-control mb-3" placeholder="Tu nombre" required>
+        <textarea name="texto" class="form-control mb-3" placeholder="Tu comentario" required></textarea>
+        <div class="text-end">
+          <button type="submit" class="btn btn-warning">Enviar comentario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  function updateDateTime() {
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('es-ES', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+    const formattedTime = now.toLocaleTimeString('es-ES', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+
+    const fecha = document.getElementById('fecha');
+    const hora = document.getElementById('hora');
+    if (fecha) fecha.textContent = formattedDate;
+    if (hora) hora.textContent = formattedTime;
+  }
+
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
+
+  const mostrarComentariosBtn = document.getElementById('mostrarComentariosBtn');
+  const comentariosModal = document.getElementById('comentariosModal');
+  const cerrarComentariosModalBtn = document.getElementById('cerrarComentariosModal');
+  const abrirAgregarComentarioBtn = document.getElementById('abrirAgregarComentarioBtn');
+  const comentarioModal = document.getElementById('comentarioModal');
+  const cerrarAgregarComentarioModalBtn = document.getElementById('cerrarAgregarComentarioModal');
+  const blurOverlay = document.getElementById('blur-overlay'); 
+
+  const originalOverflow = document.body.style.overflow;
+  const originalHeight = document.body.style.height;
+
+  function isPageMenuPrin() {
+    const main = document.getElementById('contenido-principal');
+    return main && main.classList.contains('page-menuprin');
+  }
+
+  if (mostrarComentariosBtn) {
+    mostrarComentariosBtn.addEventListener('click', () => {
+      comentariosModal.style.display = 'flex';
+      blurOverlay.style.display = 'block'; 
+      if (!isPageMenuPrin()) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.height = '100vh';
+      }
+    });
+  }
+
+  if (cerrarComentariosModalBtn) {
+    cerrarComentariosModalBtn.addEventListener('click', () => {
+      comentariosModal.style.display = 'none';
+      blurOverlay.style.display = 'none';
+      if (!isPageMenuPrin()) {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.height = originalHeight;
+      }
+    });
+  }
+
+  if (abrirAgregarComentarioBtn) {
+    abrirAgregarComentarioBtn.addEventListener('click', () => {
+      comentarioModal.style.display = 'flex';
+    });
+  }
+
+  if (cerrarAgregarComentarioModalBtn) {
+    cerrarAgregarComentarioModalBtn.addEventListener('click', () => {
+      comentarioModal.style.display = 'none';
+    });
+  }
+
+  window.addEventListener('click', (e) => {
+    if (e.target === comentariosModal) {
+      comentariosModal.style.display = 'none';
+      blurOverlay.style.display = 'none';
+      if (!isPageMenuPrin()) {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.height = originalHeight;
+      }
+    }
+    if (e.target === comentarioModal) {
+      comentarioModal.style.display = 'none';
+    }
+  });
+
+  const carousel = document.getElementById('commentsCarousel');
+  const formEliminar = document.getElementById('formEliminar');
+  if (carousel && formEliminar) {
+    function actualizarAction() {
+      const activo = carousel.querySelector('.carousel-item.active');
+      if (activo) {
+        const comentarioId = activo.getAttribute('data-id');
+        formEliminar.action = `/comentario/eliminar/${comentarioId}/`;
+      }
+    }
+    actualizarAction();
+    carousel.addEventListener('slid.bs.carousel', actualizarAction);
+  }
+
+  // Control scroll si page-menuprin al cargar página
+  const main = document.getElementById('contenido-principal');
+  if (main && main.classList.contains('page-menuprin')) {
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+  } else {
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+  }
+});
+</script>
+{% endblock %}

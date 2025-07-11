@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<meta charset="UTF-8">
+<title>Agregar Empleado - El Dragón del Valle Imperial</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    body {
+        background-color: #eef2f7;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .formulario-container {
+        max-width: 900px;
+        background: white;
+        margin: 3rem auto;
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .formulario-container h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        font-weight: bold;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #34495e;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: #fafafa;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #3498db;
+        outline: none;
+        background-color: #fff;
+    }
+
+    .form-group small {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+
+    .submit-btn {
+        grid-column: span 2;
+        padding: 14px;
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #2c80b4;
+        transform: translateY(-2px);
+    }
+
+    #preview-container {
+        max-width: 100%;
+        max-height: 200px;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-top: 8px;
+    }
+
+    @media (max-width: 768px) {
+        form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="formulario-container">
+    <h2><i class="fas fa-user-plus"></i> Agregar Empleado</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div id="mensaje-exito" data-mensaje="{{ message|escapejs }}"></div>
+    {% endfor %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mensajeDiv = document.getElementById('mensaje-exito');
+            if (mensajeDiv) {
+                const mensaje = mensajeDiv.getAttribute('data-mensaje');
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: mensaje,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+    </script>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_nombre"><i class="fas fa-user"></i> Nombre</label>
+            {{ form.nombre }}
+            <small>Nombre completo del empleado.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="id_carnet"><i class="fas fa-id-card"></i> Carnet</label>
+            {{ form.carnet }}
+            <small>Ingrese el número del documento de identidad </small>
+        </div>
+
+        <div class="form-group">
+            <label for="id_telefono"><i class="fas fa-phone"></i> Teléfono</label>
+            {{ form.telefono }}
+            <small>Número de contacto del empleado.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="id_direccion"><i class="fas fa-map-marker-alt"></i> Dirección</label>
+            {{ form.direccion }}
+            <small>Domicilio completo.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="id_puesto"><i class="fas fa-briefcase"></i> Puesto</label>
+            {{ form.puesto }}
+            <small>Rol que desempeñará en el restaurante.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="id_identificacion"><i class="fas fa-file-upload"></i> Identificación</label>
+            {{ form.identificacion }}
+            <small>Ingrese el numero de identificacion del empleado</small>
+        </div>
+
+        <div class="form-group" style="grid-column: span 2;">
+            <label for="id_pais"><i class="fas fa-globe"></i> País</label>
+            <input type="text" id="input-pais" name="pais" placeholder="Escriba el país" autocomplete="off" class="form-control">
+            <small>País de origen del empleado.</small>
+        </div>
+
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-save"></i> Guardar Empleado
+        </button>
+    </form>
+</div>
+{% endblock %}

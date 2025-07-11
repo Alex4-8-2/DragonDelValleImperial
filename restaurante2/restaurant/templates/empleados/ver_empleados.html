@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .modal.show {
+    z-index: 2000 !important;
+  }
+
+  /* Efecto de desenfoque */
+  .blurred {
+    filter: blur(5px);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+  }
+
+  .modal-backdrop.show {
+    opacity: 0.5 !important;
+    backdrop-filter: blur(2px);
+  }
+</style>
+
+<!-- Título con ícono -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>
+    <i class="bi bi-people-fill me-2"></i> Empleados
+  </h1>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div id="mensaje-exito" data-mensaje="{{ message|escapejs }}"></div>
+  {% endfor %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const mensajeDiv = document.getElementById('mensaje-exito');
+      if (mensajeDiv) {
+        const mensaje = mensajeDiv.getAttribute('data-mensaje');
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: mensaje,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    });
+  </script>
+{% endif %}
+
+<!-- Card con sombra y borde redondeado -->
+<div class="card shadow-sm mb-5 main-content">
+  <div class="card-header bg-primary text-white d-flex align-items-center">
+    <i class="bi bi-person-lines-fill me-2 fs-4"></i>
+    <span class="fs-5 fw-semibold">Empleados del Restaurante</span>
+  </div>
+<div class="mb-3">
+  <input type="text" class="form-control" id="filtro-empleados" placeholder="Buscar empleado por nombre, carnet, puesto...">
+</div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle mb-0">
+        <thead class="table-primary">
+          <tr>
+            <th>Foto</th>
+            <th>Nombre</th>
+            <th>Carnet</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Puesto</th>
+            <th>País</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for empleado in empleados %}
+          <tr>
+            <td style="width:50px;">
+              {% if empleado.foto %}
+                <img src="{{ empleado.foto.url }}" alt="Foto de {{ empleado.nombre }}" class="rounded-circle" width="40" height="40" loading="lazy">
+              {% else %}
+                <i class="bi bi-person-circle fs-2 text-secondary"></i>
+              {% endif %}
+            </td>
+            <td>{{ empleado.nombre }}</td>
+            <td>{{ empleado.carnet }}</td>
+            <td>{{ empleado.telefono }}</td>
+            <td>{{ empleado.direccion }}</td>
+            <td>{{ empleado.puesto }}</td>
+            <td>{{ empleado.pais }}</td>
+            <td style="min-width:140px;">
+              <button class="btn btn-sm btn-primary btn-edit me-1" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#editEmpleadoModal"
+                      data-id="{{ empleado.id }}"
+                      data-nombre="{{ empleado.nombre }}"
+                      data-carnet="{{ empleado.carnet }}"
+                      data-telefono="{{ empleado.telefono }}"
+                      data-direccion="{{ empleado.direccion }}"
+                      data-puesto="{{ empleado.puesto }}"
+                      data-pais="{{ empleado.pais }}">
+                <i class="bi bi-pencil-square"></i> Editar
+              </button>
+              <form action="{% url 'eliminar_empleado' empleado.id %}" method="post" class="d-inline eliminar-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="text-center py-4">No hay empleados registrados</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de edición -->
+<div class="modal fade" id="editEmpleadoModal" tabindex="-1" aria-labelledby="editEmpleadoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" id="editEmpleadoForm" novalidate>
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="editEmpleadoModalLabel">Editar Empleado</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="edit-id">
+
+          <div class="mb-3">
+            <label for="edit-nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="nombre" id="edit-nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-carnet" class="form-label">Carnet</label>
+            <input type="text" class="form-control" name="carnet" id="edit-carnet" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-telefono" class="form-label">Teléfono</label>
+            <input type="tel" pattern="[0-9]+" class="form-control" name="telefono" id="edit-telefono" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" name="direccion" id="edit-direccion" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-puesto" class="form-label">Puesto</label>
+            <input type="text" class="form-control" name="puesto" id="edit-puesto" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-pais" class="form-label">País</label>
+            <input list="lista-paises" class="form-control" name="pais" id="edit-pais" required>
+            <datalist id="lista-paises"></datalist>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-save2"></i> Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const editButtons = document.querySelectorAll('.btn-edit');
+  const form = document.getElementById('editEmpleadoForm');
+  const mainContent = document.querySelector('.main-content');
+  const modal = document.getElementById('editEmpleadoModal');
+
+  editButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      document.getElementById('edit-id').value = button.dataset.id;
+      document.getElementById('edit-nombre').value = button.dataset.nombre;
+      document.getElementById('edit-carnet').value = button.dataset.carnet;
+      document.getElementById('edit-telefono').value = button.dataset.telefono;
+      document.getElementById('edit-direccion').value = button.dataset.direccion;
+      document.getElementById('edit-puesto').value = button.dataset.puesto;
+      document.getElementById('edit-pais').value = button.dataset.pais;
+      form.action = `/empleados/editar/${button.dataset.id}/`;
+    });
+  });
+
+  // Mostrar desenfoque al abrir modal
+  modal.addEventListener('show.bs.modal', function () {
+    mainContent.classList.add('blurred');
+  });
+  modal.addEventListener('hidden.bs.modal', function () {
+    mainContent.classList.remove('blurred');
+  });
+
+  // Confirmación para eliminar
+  const eliminarForms = document.querySelectorAll('.eliminar-form');
+  eliminarForms.forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡No podrás revertir esta acción!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submit();
+        }
+      });
+    });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const filtro = document.getElementById('filtro-empleados');
+  const filas = document.querySelectorAll('tbody tr');
+
+  filtro.addEventListener('keyup', function () {
+    const texto = this.value.toLowerCase();
+
+    filas.forEach(fila => {
+      const contenidoFila = fila.textContent.toLowerCase();
+      fila.style.display = contenidoFila.includes(texto) ? '' : 'none';
+    });
+  });
+});
+
+</script>
+{% endblock %}
